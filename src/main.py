@@ -1,4 +1,5 @@
 import argparse
+import requests
 import re
 
 # holy shit
@@ -25,9 +26,24 @@ parser.add_argument("--demo", type=str, help="Demo Link")
 
 args = parser.parse_args()
 
-# raw readme check
-if re.match(RAW_README_REGEX, args.readme, re.IGNORECASE):
-    reject_reasons.append(rejection_reasons["raw_readme"]) 
+# checks
+def raw_readme_check():
+    if re.match(RAW_README_REGEX, args.readme, re.IGNORECASE):
+        reject_reasons.append(rejection_reasons["raw_readme"]) 
 
+# 404 repo check
+def private_repo_demo_check():
+    repo_response = requests.get(args.repo)
+    demo_response = requests.get(args.demo)
+
+    if repo_response.status_code == 200 and demo_response.status_code == 200:
+        return
+    elif repo_response.status_code == 404:
+        reject_reasons.append(rejection_reasons["404_repo"])
+    elif demo_response.status_code == 404:
+        reject_reasons.append(rejection_reasons["404_demo"])
+    elif repo_response.status_code == 403 and repo_response.headers.get("X-RateLimit-Remaining") == 0 or demo_response.status_code == 403 and demo_response.headers.get("X-RateLimit-Remaining") == 0:
+        pass # TODO: handle ratelimit case
+    
 # TODO: add all checks
 # TODO: refactor functions
