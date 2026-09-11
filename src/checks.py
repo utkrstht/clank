@@ -1,7 +1,9 @@
+from emoji import emoji_count
 import re
 import requests
 
-# This line (Line 6) of code was generated via generative AI (being Google AI Overview), search/prompt was "Regex for raw README validation case-insensitive"
+
+# This line of code was generated via generative AI (being Google AI Overview), search/prompt was "Regex for raw README validation case-insensitive"
 RAW_README_REGEX = r"^https?:\/\/(?:raw\.githubusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+|gitlab\.com\/api\/v4\/projects\/[^\/]+\/repository\/files\/README(?:\.[a-zA-Z0-9]+)?\/raw|bitbucket\.org\/[^\/]+\/[^\/]+\/raw\/[^\/]+)\/README(?:\.[a-zA-Z0-9]+)?$"
 
 # rejection reasons dictionary 
@@ -26,9 +28,18 @@ def private_repo_demo_check(repo, demo):
     elif repo_response.status_code == 403 and repo_response.headers.get("X-RateLimit-Remaining") == 0 or demo_response.status_code == 403 and demo_response.headers.get("X-RateLimit-Remaining") == 0:
         pass # TODO: handle ratelimit case
 
+def ai_readme_check(readme):
+    response = requests.get(readme)
+    if response.status_code == 200:
+        readme_text = response.text
+        if readme_text.count("—") >= 1 or emoji_count(readme_text) >= 3:
+            reject_reasons.append(rejection_reasons["ai_readme"])
+            # TODO: make more accurate 
+
 def run_all_checks(readme, repo, demo):
     raw_readme_check(readme)
     private_repo_demo_check(repo, demo)
 
     return reject_reasons
+
 # TODO: add all checks
