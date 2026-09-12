@@ -15,7 +15,7 @@ def calculate_ratelimit(response):
     return sleep_time
 
 def is_banned_domain(demo):
-    if "onrender." in demo or "streamlit." in demo or "hf." in demo or "huggingface" in demo or "ngrok" in demo or "cloudflared" in demo:
+    if "onrender." in demo or "streamlit." in demo or "hf." in demo or "huggingface." in demo or "ngrok" in demo or "cloudflared" in demo:
         return True
     else:
         return False
