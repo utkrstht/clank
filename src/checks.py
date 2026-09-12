@@ -50,9 +50,11 @@ def ai_readme_check(readme):
             reject_reasons.append(rejection_reasons["ai_readme"])
             # TODO: make more accurate 
 
-def hosting_provider_check(demo):
+def hosting_provider_check(demo, repo):
     if is_banned_domain(demo):
         reject_reasons.append(rejection_reasons["banned_hosting_provider"])
+    elif repo in demo or demo in repo:
+        reject_reasons.append(rejection_reasons["repo_demo_same"])
     else:
         return
 
@@ -61,6 +63,8 @@ def run_all_checks(readme, repo, demo):
     raw_readme_check(readme)
     private_repo_check(repo)
     private_demo_check(demo)
+    hosting_provider_check(demo, repo)
+    ai_readme_check(readme)
 
     return reject_reasons
 
