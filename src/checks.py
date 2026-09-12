@@ -69,7 +69,7 @@ def hosting_provider_check(demo, repo):
     else:
         return
 
-def short_no_readme(readme):
+def short_empty_readme(readme):
     response = requests.get(readme)
     if response.status_code == 200:
         if len(response.text) <= 500:
