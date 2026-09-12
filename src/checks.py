@@ -24,6 +24,7 @@ def raw_readme_check(readme):
         return
     elif response.status_code == 404:
         reject_reasons.append(rejection_reasons["no_readme"])
+        return "No Readme"
     elif response.status_code == 403 and int(response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(response))
         raw_readme_check(readme)
@@ -35,6 +36,7 @@ def private_repo_check(repo):
         return
     elif repo_response.status_code == 404:
         reject_reasons.append(rejection_reasons["404_repo"])
+        return "Private Repo"
     elif repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(repo_response))
         # recursion!!! 🚀😍
@@ -48,6 +50,7 @@ def private_demo_check(demo):
         return
     elif demo_response.status_code == 404:
         reject_reasons.append(rejection_reasons["404_demo"])
+        return "Private Demo"
     elif demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(demo_response))
         # recursion!!! 🚀😍
@@ -76,14 +79,15 @@ def short_empty_readme(readme):
             reject_reasons.append(rejection_reasons["short_readme"])
 
 def run_all_checks(readme, repo, demo):
-    raw_readme_check(readme)
-    private_repo_check(repo)
-    private_demo_check(demo)
-    hosting_provider_check(demo, repo)
-    ai_readme_check(readme)
-    short_no_readme(readme)
+    if raw_readme_check(readme) != "No Readme":
+        ai_readme_check(readme)
+        short_empty_readme(readme)
+
+    if private_repo_check(repo) != "Private Repo" and private_demo_check(demo) != "Private Demo":
+        hosting_provider_check(demo, repo)
 
     return reject_reasons
 
+# TODO: optimize checks as they currently send a lot of requests to GitHub for the same thing, and GitHub only allows 60 rph for no auth requests.
 # TODO: add all checks
 # TODO: specifically implement some minor checks for project banner
