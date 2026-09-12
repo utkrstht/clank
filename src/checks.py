@@ -16,6 +16,7 @@ reject_reasons = []
 def raw_readme_check(readme):
     if re.match(RAW_README_REGEX, readme, re.IGNORECASE):
         reject_reasons.append(rejection_reasons["raw_readme"]) 
+    
 
 def private_repo_check(repo):
     repo_response = requests.get(repo)
@@ -58,6 +59,11 @@ def hosting_provider_check(demo, repo):
     else:
         return
 
+def short_no_readme(readme):
+    response = requests.get(readme)
+    if response.status_code == 200:
+        if len(response.text) <= 500:
+            reject_reasons.append(rejection_reasons["short_readme"])
 
 def run_all_checks(readme, repo, demo):
     raw_readme_check(readme)
@@ -65,6 +71,7 @@ def run_all_checks(readme, repo, demo):
     private_demo_check(demo)
     hosting_provider_check(demo, repo)
     ai_readme_check(readme)
+    short_no_readme(readme)
 
     return reject_reasons
 
