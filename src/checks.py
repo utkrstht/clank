@@ -17,20 +17,31 @@ def raw_readme_check(readme):
     if re.match(RAW_README_REGEX, readme, re.IGNORECASE):
         reject_reasons.append(rejection_reasons["raw_readme"]) 
 
-def private_repo_demo_check(repo, demo):
+def private_repo_check(repo):
     repo_response = requests.get(repo)
-    demo_response = requests.get(demo)
 
-    if repo_response.status_code == 200 and demo_response.status_code == 200:
+    if repo_response.status_code == 200:
         return
     elif repo_response.status_code == 404:
         reject_reasons.append(rejection_reasons["404_repo"])
-    elif demo_response.status_code == 404:
-        reject_reasons.append(rejection_reasons["404_demo"])
     elif repo_response.status_code == 403 and repo_response.headers.get("X-RateLimit-Remaining") == 0:
         sleep(calculate_ratelimit(repo_response))
+        # recursion!!! 🚀😍
+        private_repo_check(repo)
+
+
+def private_demo_check(demo):
+    demo_response = requests.get(demo)
+
+    if demo_response.status_code == 200:
+        return
+    elif demo_response.status_code == 404:
+        reject_reasons.append(rejection_reasons["404_demo"])
     elif demo_response.status_code == 403 and demo_response.headers.get("X-RateLimit-Remaining") == 0:
         sleep(calculate_ratelimit(demo_response))
+        # recursion!!! 🚀😍
+        private_demo_check(demo)
+    
 
 def ai_readme_check(readme):
     response = requests.get(readme)
@@ -42,7 +53,8 @@ def ai_readme_check(readme):
 
 def run_all_checks(readme, repo, demo):
     raw_readme_check(readme)
-    private_repo_demo_check(repo, demo)
+    private_repo_check(repo)
+    private_demo_check(demo)
 
     return reject_reasons
 
