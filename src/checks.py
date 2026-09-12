@@ -24,35 +24,28 @@ reject_reasons = []
 def raw_readme_check(readme):
     if not re.match(RAW_README_REGEX, readme.url, re.IGNORECASE):
         reject_reasons.append(rejection_reasons["raw_readme"]) 
-        return
+        return "Raw Readme Link is not raw"
 
-    if readme.status_code == 200:
-        return
-    elif readme.status_code == 404:
+    if readme.status_code == 404:
         reject_reasons.append(rejection_reasons["no_readme"])
         return "No Readme"
 
 def private_repo_check(repo):
-    if repo.status_code == 200:
-        return
-    elif repo.status_code == 404:
+    if repo.status_code == 404:
         reject_reasons.append(rejection_reasons["404_repo"])
         return "Private Repo"
 
 def private_demo_check(demo):
-    if demo.status_code == 200:
-        return
-    elif demo.status_code == 404:
+    if demo.status_code == 404:
         reject_reasons.append(rejection_reasons["404_demo"])
         return "Private Demo"
 
 def ai_readme_check(readme):
-    if readme.status_code == 200:
-        readme_text = readme.text
-        if readme_text.count("—") >= 1 or emoji_count(readme_text) >= 3:
-            reject_reasons.append(rejection_reasons["ai_readme"])
-            return "AI Readme"
-            # TODO: make more accurate 
+    readme_text = readme.text
+    if readme_text.count("—") >= 1 or emoji_count(readme_text) >= 3:
+        reject_reasons.append(rejection_reasons["ai_readme"])
+        return "AI Readme"
+        # TODO: make more accurate 
 
 def hosting_provider_check(demo, repo):
     if is_banned_domain(demo):
@@ -64,16 +57,16 @@ def hosting_provider_check(demo, repo):
         return
 
 def short_empty_readme(readme):
-    if readme.status_code == 200:
-        if len(readme.text) <= 500:
-            reject_reasons.append(rejection_reasons["short_readme"])
-            return "Short Readme"
+    if len(readme.text) <= 500:
+        reject_reasons.append(rejection_reasons["short_readme"])
+        return "Short Readme"
 
 def run_all_checks(readme, repo, demo):
     readme_response = requests.get(readme, timeout=30)
     repo_response = requests.get(repo, timeout=30)
     demo_response = requests.get(demo, timeout=30)
 
+    # handle ratelimits
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(readme_response))
         readme_response = requests.get(readme)
