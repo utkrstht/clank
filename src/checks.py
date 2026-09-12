@@ -1,5 +1,5 @@
 from emoji import emoji_count
-from utils import calculate_ratelimit
+from utils import calculate_ratelimit, is_banned_domain
 from time import sleep
 import re
 import requests
@@ -41,7 +41,6 @@ def private_demo_check(demo):
         sleep(calculate_ratelimit(demo_response))
         # recursion!!! 🚀😍
         private_demo_check(demo)
-    
 
 def ai_readme_check(readme):
     response = requests.get(readme)
@@ -50,6 +49,13 @@ def ai_readme_check(readme):
         if readme_text.count("—") >= 1 or emoji_count(readme_text) >= 3:
             reject_reasons.append(rejection_reasons["ai_readme"])
             # TODO: make more accurate 
+
+def hosting_provider_check(demo):
+    if is_banned_domain(demo):
+        reject_reasons.append(rejection_reasons["banned_hosting_provider"])
+    else:
+        return
+
 
 def run_all_checks(readme, repo, demo):
     raw_readme_check(readme)
