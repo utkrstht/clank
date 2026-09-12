@@ -75,12 +75,12 @@ def run_all_checks(readme, repo, demo):
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(readme_response))
         readme_response = requests.get(readme)
-    elif repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining")) == 0:
-            sleep(calculate_ratelimit(repo_response))
-            repo_response = requests.get(repo)
-    elif demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
-            sleep(calculate_ratelimit(demo_response))
-            demo_response = requests.get(demo)
+    if repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining")) == 0:
+        sleep(calculate_ratelimit(repo_response))
+        repo_response = requests.get(repo)
+    if demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
+        sleep(calculate_ratelimit(demo_response))
+        demo_response = requests.get(demo)
 
     if raw_readme_check(readme_response) != "No Readme":
         ai_readme_check(readme_response)
