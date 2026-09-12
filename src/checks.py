@@ -1,7 +1,10 @@
 from emoji import emoji_count
 from utils import calculate_ratelimit, is_banned_domain
 from time import sleep
+from bs4 import BeautifulSoup
+import c2pa
 import re
+import json
 import requests
 
 # This line of code was generated via generative AI (being Google AI Overview), search/prompt was "Regex for raw README validation case-insensitive"
@@ -61,10 +64,38 @@ def short_empty_readme(readme):
         reject_reasons.append(rejection_reasons["short_readme"])
         return "Short Readme"
 
-def run_all_checks(readme, repo, demo):
+def ai_generated_banner_check(stardance):
+    soup = BeautifulSoup(stardance.text, "html.parser")
+    banner = soup.find("img", class_="project-show__banner-image")
+    # banner can sometimes be None
+    if not banner:
+        return
+    banner_url = banner["src"]
+
+    response = requests.get(banner_url)
+    content_type = response.headers.get("Content-Type", "").split(";")[0]
+    try:
+        reader = c2pa.Reader(content_type, response.content)
+
+        manifest = json.loads(reader.json())
+        active = manifest["manifests"][manifest["active_manifest"]]
+
+        for assertion in active.get("assertions", []):
+            if assertion["label"] == "c2pa.actions":
+                for action in assertion["data"]["actions"]:
+                    if action.get("digitalSourceType") == "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia":
+                        reject_reasons.append(rejection_reasons["ai_banner"])
+                        return "AI Banner"
+    except c2pa.C2paError as e:
+        print("c2pa threw an exception (likely no c2pa data found):", e)
+    except Exception as e:
+        print("something happened lol:", e)
+
+def run_all_checks(readme, repo, demo, stardance):
     readme_response = requests.get(readme, timeout=30)
     repo_response = requests.get(repo, timeout=30)
     demo_response = requests.get(demo, timeout=30)
+    stardance_response = requests.get(stardance, timeout=30)
 
     # handle ratelimits
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
@@ -76,6 +107,9 @@ def run_all_checks(readme, repo, demo):
     if demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(demo_response))
         demo_response = requests.get(demo)
+    if stardance_response.status_code == 403 and int(stardance_response.headers.get("X-RateLimit-Remaining")) == 0:
+        sleep(calculate_ratelimit(stardance_response))
+        stardance_response = requests.get(stardance)
 
 
     if raw_readme_check(readme_response) != "No Readme":
@@ -84,6 +118,8 @@ def run_all_checks(readme, repo, demo):
 
     if private_repo_check(repo_response) != "Private Repo" and private_demo_check(demo_response) != "Private Demo":
         hosting_provider_check(demo, repo)
+
+    ai_generated_banner_check(stardance_response)
 
     return reject_reasons
 

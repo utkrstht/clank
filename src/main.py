@@ -13,7 +13,7 @@ parser.add_argument("--demo", type=str, help="Demo Link")
 args = parser.parse_args()
 
 def main():
-    reject_reasons = run_all_checks(args.readme, args.repo, args.demo)
+    reject_reasons = run_all_checks(args.readme, args.repo, args.demo, args.stardance)
 
     if len(reject_reasons) != 0:
         reject_message = create_rejection_message(reject_reasons)
