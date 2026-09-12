@@ -23,7 +23,7 @@ reject_reasons = []
 
 # checks
 def raw_readme_check(readme):
-    if re.match(RAW_README_REGEX, readme, re.IGNORECASE):
+    if re.match(RAW_README_REGEX, readme.url, re.IGNORECASE):
         reject_reasons.append(rejection_reasons["raw_readme"]) 
         return
 

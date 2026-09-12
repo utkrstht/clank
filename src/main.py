@@ -13,9 +13,8 @@ parser.add_argument("--demo", type=str, help="Demo Link")
 args = parser.parse_args()
 
 def main():
-    reject_reasons = run_all_checks()
+    reject_reasons = run_all_checks(args.readme, args.repo, args.demo)
 
     reject_message = create_rejection_message(reject_reasons)
     return reject_message
 
-# TODO: refactor functions
