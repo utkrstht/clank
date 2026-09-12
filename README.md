@@ -1,4 +1,26 @@
 # clank
-big clank in the big 26 🚀🚀🚀
+clank is an review tool specifically for hack club stardance, it can run quick checks on projects for common rejection reasons for faster reviews.
 
-flag projects for common rejection reasons
+### features
+clank runs these checks on a project:
+- Valid raw README link check
+- No README/Short README check 
+- Private/Non-existent repository check
+- Private/Non-existent demo check
+- Demo pointing inside repository check
+- Unallowed hosting providers for demo check
+- Basic AI README check
+- AI generated Stardance project banner check (via C2pa metadata)
+
+once these checks are complete, depending on whatever issues there were present, clank creates a rejection message.
+
+clank uses no generative AI in any of it's review processes, and any AI used is strictly limited to processing information which cannot be processed via programatic means
+
+### goals
+- Create review videos
+- Better AI detection
+
+### outro
+clank is pretty bad right now, it's not all that good but yeah
+made with love by kaboom (utkrstht)
+MIT License
