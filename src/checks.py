@@ -32,9 +32,6 @@ def raw_readme_check(readme):
     elif readme.status_code == 404:
         reject_reasons.append(rejection_reasons["no_readme"])
         return "No Readme"
-    elif readme.status_code == 403 and int(readme.headers.get("X-RateLimit-Remaining")) == 0:
-        sleep(calculate_ratelimit(readme))
-        raw_readme_check(readme)
 
 def private_repo_check(repo):
     if repo.status_code == 200:
@@ -42,11 +39,6 @@ def private_repo_check(repo):
     elif repo.status_code == 404:
         reject_reasons.append(rejection_reasons["404_repo"])
         return "Private Repo"
-    elif repo.status_code == 403 and int(repo.headers.get("X-RateLimit-Remaining")) == 0:
-        sleep(calculate_ratelimit(repo))
-        # recursion!!! 🚀😍
-        private_repo_check(repo)
-
 
 def private_demo_check(demo):
     if demo.status_code == 200:
@@ -54,10 +46,6 @@ def private_demo_check(demo):
     elif demo.status_code == 404:
         reject_reasons.append(rejection_reasons["404_demo"])
         return "Private Demo"
-    elif demo.status_code == 403 and int(demo.headers.get("X-RateLimit-Remaining")) == 0:
-        sleep(calculate_ratelimit(demo))
-        # recursion!!! 🚀😍
-        private_demo_check(demo)
 
 def ai_readme_check(readme):
     if readme.status_code == 200:
@@ -83,6 +71,16 @@ def run_all_checks(readme, repo, demo):
     readme_response = requests.get(readme)
     repo_response = requests.get(repo)
     demo_response = requests.get(demo)
+
+    if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
+        sleep(calculate_ratelimit(readme_response))
+        readme_response = requests.get(readme)
+    elif repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining")) == 0:
+            sleep(calculate_ratelimit(repo_response))
+            repo_response = requests.get(repo)
+    elif demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
+            sleep(calculate_ratelimit(demo_response))
+            demo_response = requests.get(demo)
 
     if raw_readme_check(readme_response) != "No Readme":
         ai_readme_check(readme_response)
