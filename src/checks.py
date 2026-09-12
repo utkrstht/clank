@@ -51,6 +51,7 @@ def ai_readme_check(readme):
         readme_text = readme.text
         if readme_text.count("—") >= 1 or emoji_count(readme_text) >= 3:
             reject_reasons.append(rejection_reasons["ai_readme"])
+            return "AI Readme"
             # TODO: make more accurate 
 
 def hosting_provider_check(demo, repo):
@@ -58,6 +59,7 @@ def hosting_provider_check(demo, repo):
         reject_reasons.append(rejection_reasons["banned_hosting_provider"])
     elif repo in demo and not "releases" in demo:
         reject_reasons.append(rejection_reasons["repo_demo_same"])
+        return "Demo points within Repo"
     else:
         return
 
@@ -65,11 +67,12 @@ def short_empty_readme(readme):
     if readme.status_code == 200:
         if len(readme.text) <= 500:
             reject_reasons.append(rejection_reasons["short_readme"])
+            return "Short Readme"
 
 def run_all_checks(readme, repo, demo):
-    readme_response = requests.get(readme)
-    repo_response = requests.get(repo)
-    demo_response = requests.get(demo)
+    readme_response = requests.get(readme, timeout=30)
+    repo_response = requests.get(repo, timeout=30)
+    demo_response = requests.get(demo, timeout=30)
 
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(readme_response))
@@ -80,6 +83,7 @@ def run_all_checks(readme, repo, demo):
     if demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(demo_response))
         demo_response = requests.get(demo)
+
 
     if raw_readme_check(readme_response) != "No Readme":
         ai_readme_check(readme_response)

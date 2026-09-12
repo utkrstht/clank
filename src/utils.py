@@ -4,7 +4,7 @@ import time
 def create_rejection_message(rejection_reasons):
     template = f"""Hello, your project has the following issues, please fix them for approval:
 {"\n".join(f"- {item}" for item in rejection_reasons)}
-wIf you have any questions, DM @kaboom or create a ticket in #ask-the-shipwrights. """\
+If you have any questions, DM @kaboom or create a ticket in #ask-the-shipwrights. """\
 
     return template
 
