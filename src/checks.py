@@ -60,7 +60,7 @@ def ai_readme_check(readme):
 def hosting_provider_check(demo, repo):
     if is_banned_domain(demo):
         reject_reasons.append(rejection_reasons["banned_hosting_provider"])
-    elif repo in demo or demo in repo:
+    elif repo in demo and not "releases" in demo:
         reject_reasons.append(rejection_reasons["repo_demo_same"])
     else:
         return
