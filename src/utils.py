@@ -10,7 +10,7 @@ def create_rejection_message(rejection_reasons):
 
 def calculate_ratelimit(response):
     ratelimit_remaining = response.headers.get("X-RateLimit-Reset")
-    sleep_time = ratelimit_remaining - time.time() + 5 # 5 is a small buffer
+    sleep_time = int(ratelimit_remaining) - time.time() + 5 # 5 is a small buffer
 
     return sleep_time
 

@@ -24,7 +24,7 @@ def private_repo_check(repo):
         return
     elif repo_response.status_code == 404:
         reject_reasons.append(rejection_reasons["404_repo"])
-    elif repo_response.status_code == 403 and repo_response.headers.get("X-RateLimit-Remaining") == 0:
+    elif repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(repo_response))
         # recursion!!! 🚀😍
         private_repo_check(repo)
@@ -37,7 +37,7 @@ def private_demo_check(demo):
         return
     elif demo_response.status_code == 404:
         reject_reasons.append(rejection_reasons["404_demo"])
-    elif demo_response.status_code == 403 and demo_response.headers.get("X-RateLimit-Remaining") == 0:
+    elif demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
         sleep(calculate_ratelimit(demo_response))
         # recursion!!! 🚀😍
         private_demo_check(demo)
