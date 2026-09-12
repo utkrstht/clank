@@ -1,4 +1,6 @@
 from emoji import emoji_count
+from utils import calculate_ratelimit
+from time import sleep
 import re
 import requests
 
@@ -25,8 +27,10 @@ def private_repo_demo_check(repo, demo):
         reject_reasons.append(rejection_reasons["404_repo"])
     elif demo_response.status_code == 404:
         reject_reasons.append(rejection_reasons["404_demo"])
-    elif repo_response.status_code == 403 and repo_response.headers.get("X-RateLimit-Remaining") == 0 or demo_response.status_code == 403 and demo_response.headers.get("X-RateLimit-Remaining") == 0:
-        pass # TODO: handle ratelimit case
+    elif repo_response.status_code == 403 and repo_response.headers.get("X-RateLimit-Remaining") == 0:
+        sleep(calculate_ratelimit(repo_response))
+    elif demo_response.status_code == 403 and demo_response.headers.get("X-RateLimit-Remaining") == 0:
+        sleep(calculate_ratelimit(demo_response))
 
 def ai_readme_check(readme):
     response = requests.get(readme)
