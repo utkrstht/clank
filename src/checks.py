@@ -4,7 +4,6 @@ from time import sleep
 import re
 import requests
 
-
 # This line of code was generated via generative AI (being Google AI Overview), search/prompt was "Regex for raw README validation case-insensitive"
 RAW_README_REGEX = r"^https?:\/\/(?:raw\.githubusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+|gitlab\.com\/api\/v4\/projects\/[^\/]+\/repository\/files\/README(?:\.[a-zA-Z0-9]+)?\/raw|bitbucket\.org\/[^\/]+\/[^\/]+\/raw\/[^\/]+)\/README(?:\.[a-zA-Z0-9]+)?$"
 
@@ -23,7 +22,7 @@ reject_reasons = []
 
 # checks
 def raw_readme_check(readme):
-    if re.match(RAW_README_REGEX, readme.url, re.IGNORECASE):
+    if not re.match(RAW_README_REGEX, readme.url, re.IGNORECASE):
         reject_reasons.append(rejection_reasons["raw_readme"]) 
         return
 

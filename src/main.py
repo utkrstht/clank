@@ -21,3 +21,5 @@ def main():
     else:
         return "All checks passed"
 
+if __name__ == "__main__":
+    print(main())
