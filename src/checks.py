@@ -2,10 +2,13 @@ from emoji import emoji_count
 from utils import calculate_ratelimit, is_banned_domain
 from time import sleep
 from bs4 import BeautifulSoup
+from groq import Groq
+from dotenv import load_dotenv
 import c2pa
 import re
 import json
 import requests
+import os
 
 # This line of code was generated via generative AI (being Google AI Overview), search/prompt was "Regex for raw README validation case-insensitive"
 RAW_README_REGEX = r"^https?:\/\/(?:raw\.githubusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+|gitlab\.com\/api\/v4\/projects\/[^\/]+\/repository\/files\/README(?:\.[a-zA-Z0-9]+)?\/raw|bitbucket\.org\/[^\/]+\/[^\/]+\/raw\/[^\/]+)\/README(?:\.[a-zA-Z0-9]+)?$"
@@ -20,8 +23,13 @@ rejection_reasons = {"raw_readme":"Your raw README link is not raw, please updat
                      "banned_hosting_provider": "Your demo is hosted on an On-Activity Wake-Up hosting service, these take a very long time to load or it's hosted on a local tunneled server which can go down anytime or it's hosted on huggingface, which we do not allow, please switch to an Always-On hosting service such as Hack Club Nest, Railway and Vercel.", 
                      "short_readme": "Your README lacks detail, please add more details such as, how you made it, why you made it, screenshots, features and anything else you wish to add.", 
                      "repo_demo_same": "Your demo points to within your repository, however your demo link needs to be of a website if you made a webapp, or a compiled binary on Github Releases, or a library hosted on NPM or PyPi or some other platform depending on your project or a mod hosting website like ModRinth or CurseForge if you have a minecraft mod.",
-                     "ai_banner": "Your Stardance project banner is AI-generated, please change it to show your project running and working. "}
+                     "ai_banner": "Your Stardance project banner is AI-generated, please change it to show your project running and working. ",
+                     "irrelevant_banner": "Your Stardance project banner is either a logo or not relevant to your project, the banner needs to be of your projects running and working, please update it."}
 reject_reasons = []
+
+load_dotenv()
+
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 # checks
 def raw_readme_check(readme):
@@ -64,7 +72,7 @@ def short_empty_readme(readme):
         reject_reasons.append(rejection_reasons["short_readme"])
         return "Short Readme"
 
-def ai_generated_banner_check(stardance):
+def c2pa_banner_check(stardance):
     soup = BeautifulSoup(stardance.text, "html.parser")
     banner = soup.find("img", class_="project-show__banner-image")
     # banner can sometimes be None
@@ -90,6 +98,42 @@ def ai_generated_banner_check(stardance):
         print("c2pa threw an exception (likely no c2pa data found):", e)
     except Exception as e:
         print("something happened lol:", e)
+
+def project_banner_relevance_check(stardance):
+    soup = BeautifulSoup(stardance.text, "html.parser")
+    banner = soup.find("img", class_="project-show__banner-image")
+    # banner can sometimes be None
+    if not banner:
+        return
+    banner_url = banner["src"]
+    response = client.chat.completions.create(
+            model="qwen/qwen3.6-27b",
+            reasoning_format="hidden",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "You are to determine whether the provided image is simply a logo, or if it shows a website, project, app, game or anything of the sort running, If you determine that the image is a logo/aesthetic banner, ONLY type 'logo/banner' with nothing else, if it isn't that, only type 'approve' with nothing else"
+                            
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": banner_url}
+                        }
+                    ]
+                }
+            ]
+        )
+
+    raw = response.choices[0].message.content
+
+    if "logo/banner" in raw:
+        reject_reasons.append(rejection_reasons["irrelevant_banner"])
+        return "Irrelevant Banner"
+    if "approve" in raw:
+        return
 
 def run_all_checks(readme, repo, demo, stardance):
     readme_response = requests.get(readme, timeout=30)
@@ -119,9 +163,8 @@ def run_all_checks(readme, repo, demo, stardance):
     if private_repo_check(repo_response) != "Private Repo" and private_demo_check(demo_response) != "Private Demo":
         hosting_provider_check(demo, repo)
 
-    ai_generated_banner_check(stardance_response)
+    c2pa_banner_check(stardance_response)
 
     return reject_reasons
 
-# TODO: add all checks
-# TODO: specifically implement some minor checks for project banner
+# TODO: ai codebase check

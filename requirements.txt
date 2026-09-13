@@ -2,3 +2,4 @@ emoji
 requests
 bs4
 c2pa-python
+groq
