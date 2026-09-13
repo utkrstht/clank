@@ -20,7 +20,7 @@ rejection_reasons = {"raw_readme":"Your raw README link is not raw, please updat
                      "ai_code":"Your codebase appears to be heavily AI-generated with little human effort, please re-write most of your code by hand.", 
                      "404_repo": "Your repository is either non-existent or privated, please fix this issue.", 
                      "404_demo": "Your demo link is either non-existent or private, please fix this issue", 
-                     "banned_hosting_provider": "Your demo is either hosted on an On-Activity Wake-Up hosting service, these take a very long time to load or it's hosted on a local tunneled server which can go down anytime or it's hosted on huggingface, which we do not allow or it's hosted on youtube, which we do not allow video demos, please switch to an Always-On hosting service such as Hack Club Nest, Railway and Vercel.", 
+                     "banned_hosting_provider": "Your demo is either hosted on an On-Activity Wake-Up hosting service, these take a very long time to load or it's hosted on a local tunneled server which can go down anytime or it's hosted on huggingface, which we do not allow or it's hosted on youtube, which we do not allow video demos., please switch to an Always-On hosting service such as Hack Club Nest, Railway and Vercel.", 
                      "short_readme": "Your README lacks detail, please add more details such as, how you made it, why you made it, screenshots, features and anything else you wish to add.", 
                      "repo_demo_same": "Your demo points to within your repository, however your demo link needs to be of a website if you made a webapp, or a compiled binary on Github Releases, or a library hosted on NPM or PyPi or some other platform depending on your project or a mod hosting website like ModRinth or CurseForge if you have a minecraft mod.",
                      "ai_banner": "Your Stardance project banner is AI-generated, please change it to show your project running and working. ",
@@ -29,6 +29,13 @@ reject_reasons = []
 
 load_dotenv()
 
+# determine whether github requests are authenticated or not 
+# unauthenticated -> 60 req/hr, authenticated -> 5000 req/hr
+if os.environ.get("GITHUB_TOKEN"):
+    GITHUB_AUTH = True
+else:
+    GITHUB_AUTH = False
+    
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 # checks
