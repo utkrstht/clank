@@ -89,3 +89,12 @@ def count_docstrings(content):
     except Exception as e:
         print("ouu shii something happened: ", e)
 
+def count_non_keyboard_symbols(content):
+    keyboards_chars = set(string.printable)
+    symbols = 0
+
+    for char in content:
+        if char not in keyboards_chars:
+            if unicodedata.category(char).startswith(('P', 'S', 'M')):
+                symbols += 1
+    return symbols
