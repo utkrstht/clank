@@ -20,7 +20,7 @@ rejection_reasons = {"raw_readme":"Your raw README link is not raw, please updat
                      "ai_code":"Your codebase appears to be heavily AI-generated with little human effort, please re-write most of your code by hand.", 
                      "404_repo": "Your repository is either non-existent or privated, please fix this issue.", 
                      "404_demo": "Your demo link is either non-existent or private, please fix this issue", 
-                     "banned_hosting_provider": "Your demo is hosted on an On-Activity Wake-Up hosting service, these take a very long time to load or it's hosted on a local tunneled server which can go down anytime or it's hosted on huggingface, which we do not allow, please switch to an Always-On hosting service such as Hack Club Nest, Railway and Vercel.", 
+                     "banned_hosting_provider": "Your demo is either hosted on an On-Activity Wake-Up hosting service, these take a very long time to load or it's hosted on a local tunneled server which can go down anytime or it's hosted on huggingface, which we do not allow or it's hosted on youtube, which we do not allow video demos, please switch to an Always-On hosting service such as Hack Club Nest, Railway and Vercel.", 
                      "short_readme": "Your README lacks detail, please add more details such as, how you made it, why you made it, screenshots, features and anything else you wish to add.", 
                      "repo_demo_same": "Your demo points to within your repository, however your demo link needs to be of a website if you made a webapp, or a compiled binary on Github Releases, or a library hosted on NPM or PyPi or some other platform depending on your project or a mod hosting website like ModRinth or CurseForge if you have a minecraft mod.",
                      "ai_banner": "Your Stardance project banner is AI-generated, please change it to show your project running and working. ",
@@ -116,7 +116,6 @@ def project_banner_relevance_check(stardance):
                         {
                             "type": "text",
                             "text": "You are to determine whether the provided image is simply a logo, or if it shows a website, project, app, game or anything of the sort running, If you determine that the image is a logo/aesthetic banner, ONLY type 'logo/banner' with nothing else, if it isn't that, only type 'approve' with nothing else"
-                            
                         },
                         {
                             "type": "image_url",
@@ -134,6 +133,11 @@ def project_banner_relevance_check(stardance):
         return "Irrelevant Banner"
     if "approve" in raw:
         return
+
+def ai_codebase_check(repo):
+    # TODO: ai-ness will be determined via number of comments, emojis, em-dashes, non-keyboard symbols (eg. arrow symbol)
+    # TODO: generate a confidence score (1-100) with the above metrics
+    pass
 
 def run_all_checks(readme, repo, demo, stardance):
     readme_response = requests.get(readme, timeout=30)
@@ -167,4 +171,4 @@ def run_all_checks(readme, repo, demo, stardance):
 
     return reject_reasons
 
-# TODO: ai codebase check
+# TODO: create proof videos via python selenium, open github repo, scroll down, open repo files, scroll through them, open demo link, open stardance project page and that is it 
