@@ -147,10 +147,18 @@ def ai_codebase_check(repo):
     pass
 
 def run_all_checks(readme, repo, demo, stardance):
-    readme_response = requests.get(readme, timeout=30)
-    repo_response = requests.get(repo, timeout=30)
-    demo_response = requests.get(demo, timeout=30)
-    stardance_response = requests.get(stardance, timeout=30)
+    if GITHUB_AUTH and "github" in readme and "github" in repo:
+        headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
+        readme_response = requests.get(readme, timeout=30, headers=headers)
+        repo_response = requests.get(repo, timeout=30, headers=headers)
+        demo_response = requests.get(demo, timeout=30)
+        stardance_response = requests.get(stardance, timeout=30)
+    else:  
+        # unauthenticated
+        readme_response = requests.get(readme, timeout=30)
+        repo_response = requests.get(repo, timeout=30)
+        demo_response = requests.get(demo, timeout=30)
+        stardance_response = requests.get(stardance, timeout=30)
 
     # handle ratelimits
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
