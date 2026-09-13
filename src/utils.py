@@ -1,4 +1,6 @@
 import time
+import re
+import requests
 
 # Line 6's fstring function was generated via generative AI (being Google AI Overview), search/prompt is "<insert function code from commit 3833b6e> How can I make this shorter?"
 def create_rejection_message(rejection_reasons):
@@ -19,3 +21,11 @@ def is_banned_domain(demo):
         return True
     else:
         return False
+
+def get_repository_default_branch(repo, headers):
+    headers["Accept"] = "application/vnd.github+json"
+
+    response = requests.get(repo, headers=headers)
+    response.raise_for_status()
+
+    return response.json().get("default_branch", "main")
