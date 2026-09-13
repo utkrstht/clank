@@ -29,3 +29,13 @@ def get_repository_default_branch(repo, headers):
     response.raise_for_status()
 
     return response.json().get("default_branch", "main")
+
+def get_repository_tree(repo, branch, headers):
+    # https://github.com/example/repository/git/trees/main?recursive=1
+    url = f"{repo}/git/trees/{branch}?recursive=1"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+
+    return response.json().get("tree", [])
+
+
