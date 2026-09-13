@@ -1,5 +1,5 @@
 from emoji import emoji_count
-from utils import calculate_ratelimit, is_banned_domain, get_repository_default_branch, get_repository_tree, get_file
+from utils import calculate_ratelimit, is_banned_domain, get_repository_default_branch, get_repository_tree, get_file, count_comments, count_docstrings
 from time import sleep
 from bs4 import BeautifulSoup
 from groq import Groq
@@ -47,6 +47,15 @@ else:
     GITHUB_AUTH = False
     
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+# determine whether code/text is ai
+def ai_detector(content):
+    # TODO: implement checks for docstrings, emojis, emdashes and non keyboard symbols
+    comments = count_comments(content)
+    emojis = len(emoji_count(content))
+    # python only
+    docstrings = count_docstrings(content)
+    pass
 
 # checks
 def raw_readme_check(readme):
@@ -152,7 +161,7 @@ def project_banner_relevance_check(stardance):
         return
 
 def ai_codebase_check(repo):
-    # TODO: ai-ness will be determined via number of comments, emojis, em-dashes, non-keyboard symbols (eg. arrow symbol)
+    # TODO: ai-ness will be determined via number of comments, emojis, em-dashes, non-keyboard symbols (eg. arrow symbol), also with CLAUDE.mds and agents and .agents/.claude folders
     # TODO: generate a confidence score (1-100) with the above metrics
     headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
     

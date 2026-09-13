@@ -1,5 +1,10 @@
+from pygments.lexer import guess_lexer
+from pygments.token import Comment
+import unicodedata
+import string
+import pygments
 import time
-import re
+import ast
 import requests
 import base64
 
@@ -50,3 +55,37 @@ def get_file(repo, file_sha, headers):
         filebytes = base64.b64decode(data.get("content"))
         return filebytes.decode("utf-8", errors="replace")
     return ""
+
+# counts comments for a not known language
+def count_comments(content):
+    try:
+        lexer = guess_lexer(content)
+        tokens = pygments.lex(content, lexer)
+        comments = 0
+
+        for token_type, token_value in tokens:
+            if token_type in Comment or token_type.parent in Comment:
+                if token_value.strip():
+                    comments += 1
+
+        return comments
+
+    except Exception as e:
+        print("whoops. couldn't detect language: ", e)
+
+def count_docstrings(content):
+    try:
+        tree = ast.parse(content)
+        docstrings = 0
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+                if ast.get_docstring(node) is not None:
+                    docstrings += 1
+
+    except SyntaxError as e:
+      # print("ouu shii it wasn't python: ", e)
+        pass
+    except Exception as e:
+        print("ouu shii something happened: ", e)
+
