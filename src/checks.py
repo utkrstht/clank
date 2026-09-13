@@ -1,5 +1,5 @@
 from emoji import emoji_count
-from utils import calculate_ratelimit, is_banned_domain
+from utils import calculate_ratelimit, is_banned_domain, get_repository_default_branch, get_repository_tree, get_file
 from time import sleep
 from bs4 import BeautifulSoup
 from groq import Groq
@@ -12,6 +12,16 @@ import os
 
 # This line of code was generated via generative AI (being Google AI Overview), search/prompt was "Regex for raw README validation case-insensitive"
 RAW_README_REGEX = r"^https?:\/\/(?:raw\.githubusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+|gitlab\.com\/api\/v4\/projects\/[^\/]+\/repository\/files\/README(?:\.[a-zA-Z0-9]+)?\/raw|bitbucket\.org\/[^\/]+\/[^\/]+\/raw\/[^\/]+)\/README(?:\.[a-zA-Z0-9]+)?$"
+
+# This list was generated via generative AI (being Google AI Overview), search/prompt was "All source code extensions in a python list" and then modified by a human to remove unnecessary extensions
+source_extensions = [
+    ".html", ".htm", ".css", ".js", ".mjs", ".ts", ".tsx", ".php", ".jsx",
+    ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp", ".hxx", ".cs", ".java", 
+    ".class", ".go", ".rs", ".swift", ".kt", ".kts", ".py", ".pyw", 
+    ".ipynb", ".r", ".sh", ".bat", ".cmd", ".ps1", ".rb", ".pl", ".pm",
+    ".dart", ".scala", ".lua", ".hs", ".clj", ".ex", ".exs", ".erl", ".hrl",
+    ".groovy", ".fs", ".ml", ".pas", ".asm", ".s", ".md"
+]
 
 # rejection reasons dictionary 
 rejection_reasons = {"raw_readme":"Your raw README link is not raw, please update it.", 
@@ -144,7 +154,24 @@ def project_banner_relevance_check(stardance):
 def ai_codebase_check(repo):
     # TODO: ai-ness will be determined via number of comments, emojis, em-dashes, non-keyboard symbols (eg. arrow symbol)
     # TODO: generate a confidence score (1-100) with the above metrics
-    pass
+    headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
+    
+    # obtain repository files
+    branch = get_repository_default_branch(repo, headers)
+    tree = get_repository_tree(repo, branch, headers)
+
+    # holy trippy wizard shit bro
+    source_files = [ item for item in tree if item["type"] == "blob" and item["path"].endswith(source_extensions) ]
+
+    # fetch file content
+    for file in source_files:
+        path = file["path"]
+        sha = file["sha"]
+
+        try:
+            content = get_file(repo, sha, headers)
+        except Exception as e:
+            print(f"ohohoho whoops i fucked up (could not read {path} while fetching file): {e}")
 
 def run_all_checks(readme, repo, demo, stardance):
     if GITHUB_AUTH and "github" in readme and "github" in repo:
