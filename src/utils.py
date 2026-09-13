@@ -1,6 +1,7 @@
 import time
 import re
 import requests
+import base64
 
 # Line 6's fstring function was generated via generative AI (being Google AI Overview), search/prompt is "<insert function code from commit 3833b6e> How can I make this shorter?"
 def create_rejection_message(rejection_reasons):
@@ -38,4 +39,14 @@ def get_repository_tree(repo, branch, headers):
 
     return response.json().get("tree", [])
 
+def get_file(repo, file_sha, headers):
+    # https://github.com/example/repository/git/blob/insert_file_sha_lol
+    url = f"{repo}/git/blobs/{file_sha}"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
 
+    data = response.json()
+    if data.get("encoding") == "base64":
+        filebytes = base64.b64decode(data.get("content"))
+        return filebytes.decode("utf-8", errors="replace")
+    return ""
