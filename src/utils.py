@@ -5,6 +5,7 @@ import string
 import pygments
 import time
 import ast
+import math
 import requests
 import base64
 
@@ -98,3 +99,6 @@ def count_non_keyboard_symbols(content):
             if unicodedata.category(char).startswith(('P', 'S', 'M')):
                 symbols += 1
     return symbols
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
