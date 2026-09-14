@@ -11,6 +11,8 @@ clank runs these checks on a project:
 - Unallowed hosting providers for demo check
 - Basic AI README check
 - AI generated Stardance project banner check (via C2pa metadata)
+- AI codebase check
+- Stardance project banner relevance check
 
 once these checks are complete, depending on whatever issues there were present, clank creates a rejection message.
 
@@ -18,9 +20,8 @@ clank uses extremely minimal AI in any of it's review processes only to process 
 
 ### goals
 - Create review videos
-- Better AI detection
 
 ### outro
-clank is pretty bad right now, it's not all that good but yeah
-made with love by kaboom (utkrstht)
-MIT License
+clank is pretty bad right now, it's not all that good but yeah  
+made with love by kaboom (utkrstht)  
+MIT License  

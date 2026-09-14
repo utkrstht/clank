@@ -209,6 +209,9 @@ def run_all_checks(readme, repo, demo, stardance):
         demo_response = requests.get(demo, timeout=30)
         stardance_response = requests.get(stardance, timeout=30)
 
+    repo_status = private_repo_check(repo)
+    demo_status = private_demo_check(demo)
+
     # handle ratelimits
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
         ratelimit = calculate_ratelimit(readme_response)
@@ -244,10 +247,10 @@ def run_all_checks(readme, repo, demo, stardance):
         ai_readme_check(readme_response)
         short_empty_readme(readme_response)
 
-    if private_repo_check(repo_response) != "Private Repo" and private_demo_check(demo_response) != "Private Demo":
+    if repo_status != "Private Repo" and demo_status != "Private Demo":
         hosting_provider_check(demo, repo)
 
-    if private_repo_check(repo_response) != "Private Repo":
+    if repo_status != "Private Repo":
         ai_codebase_check(repo)
 
     c2pa_banner_check(stardance_response)
