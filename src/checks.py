@@ -173,6 +173,11 @@ def ai_codebase_check(repo):
 
         try:
             content = get_file(repo, sha, headers)
+
+            # skip file if it's empty as it can crash ai_detector math
+            if not content:
+                continue
+
             code_confidence = ai_detector(content)
             agents_confidence = 0
 
