@@ -209,28 +209,29 @@ def run_all_checks(readme, repo, demo, stardance):
         ratelimit = calculate_ratelimit(readme_response)
         if not ratelimit:
             sleep(ratelimit)
-            readme_response = requests.get(readme)
+            # I am so smart and proud that I know this one line wizard bullshit
+            readme_response = requests.get(readme, timeout=30, headers=headers if GITHUB_AUTH else {})
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
     if repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining")) == 0:
         ratelimit = calculate_ratelimit(repo_response)
         if not ratelimit:
             sleep(ratelimit)
-            repo_response = requests.get(repo)
+            repo_response = requests.get(repo, timeout=30, headers=headers if GITHUB_AUTH else {})
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
     if demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
-        ratelimit = calculate_ratelimit(readme_response)
+        ratelimit = calculate_ratelimit(demo_response)
         if not ratelimit:
             sleep(ratelimit)
-            demo_response = requests.get(demo)
+            demo_response = requests.get(demo, timeout=30)
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
     if stardance_response.status_code == 403 and int(stardance_response.headers.get("X-RateLimit-Remaining")) == 0:
-        ratelimit = calculate_ratelimit(readme_response)
+        ratelimit = calculate_ratelimit(stardance_response)
         if not ratelimit:
             sleep(ratelimit)
-            stardance_response = requests.get(stardance)
+            stardance_response = requests.get(stardance, timeout=30)
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
 
