@@ -82,9 +82,10 @@ def count_comments(content):
         return 0
 
 def count_docstrings(content):
+    docstrings = 0
+    
     try:
         tree = ast.parse(content)
-        docstrings = 0
 
         for node in ast.walk(tree):
             if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
