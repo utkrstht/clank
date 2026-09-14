@@ -74,6 +74,7 @@ def count_comments(content):
 
     except Exception as e:
         print("whoops. couldn't detect language: ", e)
+        return 0
 
 def count_docstrings(content):
     try:
@@ -110,7 +111,7 @@ def sigmoid(x):
 def ai_detector(content):
     comments = count_comments(content)
     emojis = emoji_count(content)
-    
+
     # python only
     docstrings = count_docstrings(content)
 
