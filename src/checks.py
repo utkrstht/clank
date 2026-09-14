@@ -170,6 +170,19 @@ def ai_codebase_check(repo):
 
         try:
             content = get_file(repo, sha, headers)
+            code_confidence = ai_detector(content)
+            agents_confidence = 0
+
+            # check if agents/claude folder exists
+            if "claude" in path.lower():
+                agents_confidence += 0.40
+            if "agents" in path.lower():
+                agents_confidence += 0.40
+            
+            # trigger value is pretty low since the function can return low values even for high AI usage in some cases
+            if code_confidence >= 0.45 or agents_confidence >= 0.40:
+                reject_reasons.append(rejection_reasons["ai_code"])
+            
         except Exception as e:
             print(f"ohohoho whoops i fucked up (could not read {path} while fetching file): {e}")
 
