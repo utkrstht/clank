@@ -152,8 +152,7 @@ def project_banner_relevance_check(stardance):
         return
 
 def ai_codebase_check(repo):
-    # TODO: ai-ness will be determined via number of comments, emojis, em-dashes, non-keyboard symbols (eg. arrow symbol), also with CLAUDE.mds and agents and .agents/.claude folders
-    # TODO: generate a confidence score (1-100) with the above metrics
+    # TODO (not really): guess what model generated the code, e.g. gemini REALLY likes to fill the code with docstrings and --- thing --- comments
     headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
     
     # obtain repository files
@@ -221,6 +220,9 @@ def run_all_checks(readme, repo, demo, stardance):
 
     if private_repo_check(repo_response) != "Private Repo" and private_demo_check(demo_response) != "Private Demo":
         hosting_provider_check(demo, repo)
+
+    if private_repo_check(repo_response) != "Private Repo":
+        ai_codebase_check(repo)
 
     c2pa_banner_check(stardance_response)
 
