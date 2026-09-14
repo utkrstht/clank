@@ -244,8 +244,8 @@ def run_all_checks(readme, repo, demo, stardance):
             pass # TODO: handle X-RateLimit-Reset not being provided
 
     if raw_readme_check(readme_response) not in ["No Readme", "Raw Readme Link is not raw"]:
-        ai_readme_check(readme_response)
-        short_empty_readme(readme_response)
+        if short_empty_readme(readme_response) != "Short Readme":
+            ai_readme_check(readme_response)
 
     if repo_status != "Private Repo" and demo_status != "Private Demo":
         hosting_provider_check(demo, repo)
