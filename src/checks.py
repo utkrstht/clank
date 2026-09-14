@@ -251,6 +251,7 @@ def run_all_checks(readme, repo, demo, stardance):
         ai_codebase_check(repo)
 
     c2pa_banner_check(stardance_response)
+    project_banner_relevance_check(stardance_response)
 
     return reject_reasons
 

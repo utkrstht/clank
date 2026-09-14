@@ -14,7 +14,7 @@ clank runs these checks on a project:
 
 once these checks are complete, depending on whatever issues there were present, clank creates a rejection message.
 
-clank uses no generative AI in any of it's review processes, and any AI used is strictly limited to processing information which cannot be processed via programatic means
+clank uses extremely minimal AI in any of it's review processes only to process image information which could otherwise not be processed programmatically, any and all AI used is strictly limited to processing information which cannot be processed via programatic means
 
 ### goals
 - Create review videos
