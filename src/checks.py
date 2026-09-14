@@ -14,14 +14,14 @@ import os
 RAW_README_REGEX = r"^https?:\/\/(?:raw\.githubusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+|gitlab\.com\/api\/v4\/projects\/[^\/]+\/repository\/files\/README(?:\.[a-zA-Z0-9]+)?\/raw|bitbucket\.org\/[^\/]+\/[^\/]+\/raw\/[^\/]+)\/README(?:\.[a-zA-Z0-9]+)?$"
 
 # This list was generated via generative AI (being Google AI Overview), search/prompt was "All source code extensions in a python list" and then modified by a human to remove unnecessary extensions
-source_extensions = [
+source_extensions = (
     ".html", ".htm", ".css", ".js", ".mjs", ".ts", ".tsx", ".php", ".jsx",
     ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp", ".hxx", ".cs", ".java", 
     ".class", ".go", ".rs", ".swift", ".kt", ".kts", ".py", ".pyw", 
     ".ipynb", ".r", ".sh", ".bat", ".cmd", ".ps1", ".rb", ".pl", ".pm",
     ".dart", ".scala", ".lua", ".hs", ".clj", ".ex", ".exs", ".erl", ".hrl",
     ".groovy", ".fs", ".ml", ".pas", ".asm", ".s", ".md"
-]
+)
 
 # rejection reasons dictionary 
 rejection_reasons = {"raw_readme":"Your raw README link is not raw, please update it.", 
