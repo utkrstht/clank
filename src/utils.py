@@ -20,8 +20,12 @@ If you have any questions, DM @kaboom or create a ticket in #ask-the-shipwrights
 
 def calculate_ratelimit(response):
     ratelimit_remaining = response.headers.get("X-RateLimit-Reset")
-    sleep_time = int(ratelimit_remaining) - time.time() + 5 # 5 is a small buffer
-
+    try:
+        sleep_time = int(ratelimit_remaining) - time.time() + 5 # 5 is a small buffer
+    except TypeError:
+        print("Well shit, this website doesn't give you the header to determine when the ratelimit ends")
+        return None
+    
     return sleep_time
 
 def is_banned_domain(demo):

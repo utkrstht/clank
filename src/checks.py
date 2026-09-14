@@ -206,18 +206,33 @@ def run_all_checks(readme, repo, demo, stardance):
 
     # handle ratelimits
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining")) == 0:
-        sleep(calculate_ratelimit(readme_response))
-        readme_response = requests.get(readme)
+        ratelimit = calculate_ratelimit(readme_response)
+        if not ratelimit:
+            sleep(ratelimit)
+            readme_response = requests.get(readme)
+        else:
+            pass # TODO: handle X-RateLimit-Reset not being provided
     if repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining")) == 0:
-        sleep(calculate_ratelimit(repo_response))
-        repo_response = requests.get(repo)
+        ratelimit = calculate_ratelimit(repo_response)
+        if not ratelimit:
+            sleep(ratelimit)
+            repo_response = requests.get(repo)
+        else:
+            pass # TODO: handle X-RateLimit-Reset not being provided
     if demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining")) == 0:
-        sleep(calculate_ratelimit(demo_response))
-        demo_response = requests.get(demo)
+        ratelimit = calculate_ratelimit(readme_response)
+        if not ratelimit:
+            sleep(ratelimit)
+            demo_response = requests.get(demo)
+        else:
+            pass # TODO: handle X-RateLimit-Reset not being provided
     if stardance_response.status_code == 403 and int(stardance_response.headers.get("X-RateLimit-Remaining")) == 0:
-        sleep(calculate_ratelimit(stardance_response))
-        stardance_response = requests.get(stardance)
-
+        ratelimit = calculate_ratelimit(readme_response)
+        if not ratelimit:
+            sleep(ratelimit)
+            stardance_response = requests.get(stardance)
+        else:
+            pass # TODO: handle X-RateLimit-Reset not being provided
 
     if raw_readme_check(readme_response) != "No Readme":
         ai_readme_check(readme_response)
