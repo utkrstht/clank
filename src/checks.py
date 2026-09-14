@@ -213,7 +213,7 @@ def run_all_checks(readme, repo, demo, stardance):
     demo_status = private_demo_check(demo)
 
     # handle ratelimits and also some more of this one liner wizardry
-    if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining") if not None else 0) == 0:
+    if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining") or 0) == 0:
         ratelimit = calculate_ratelimit(readme_response)
         if ratelimit:
             sleep(ratelimit)
@@ -221,21 +221,21 @@ def run_all_checks(readme, repo, demo, stardance):
             readme_response = requests.get(readme, timeout=30, headers=headers if GITHUB_AUTH else {})
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
-    if repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining") if not None else 0) == 0:
+    if repo_response.status_code == 403 and int(repo_response.headers.get("X-RateLimit-Remaining") or 0) == 0:
         ratelimit = calculate_ratelimit(repo_response)
         if ratelimit:
             sleep(ratelimit)
             repo_response = requests.get(repo, timeout=30, headers=headers if GITHUB_AUTH else {})
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
-    if demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining") if not None else 0) == 0:
+    if demo_response.status_code == 403 and int(demo_response.headers.get("X-RateLimit-Remaining") or 0) == 0:
         ratelimit = calculate_ratelimit(demo_response)
         if ratelimit:
             sleep(ratelimit)
             demo_response = requests.get(demo, timeout=30)
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
-    if stardance_response.status_code == 403 and int(stardance_response.headers.get("X-RateLimit-Remaining") if not None else 0) == 0:
+    if stardance_response.status_code == 403 and int(stardance_response.headers.get("X-RateLimit-Remaining") or 0) == 0:
         ratelimit = calculate_ratelimit(stardance_response)
         if ratelimit:
             sleep(ratelimit)
