@@ -1,5 +1,6 @@
 from pygments.lexer import guess_lexer
 from pygments.token import Comment
+from emoji import emoji_count
 import unicodedata
 import string
 import pygments
@@ -102,3 +103,28 @@ def count_non_keyboard_symbols(content):
 
 def sigmoid(x):
     return 1 / (1 + math.exp(-x))
+
+# determine whether code/text is ai
+def ai_detector(content):
+    comments = count_comments(content)
+    emojis = len(emoji_count(content))
+
+    # python only
+    docstrings = count_docstrings(content)
+
+    emdashes = content.count("—")
+    non_keyboard_symbols = count_non_keyboard_symbols(content)
+
+    total_lines = len(content.splitlines())
+
+    # random ass math function
+    confidence = sigmoid(
+        3.0 * (docstrings / (total_lines / 10)) +
+        2.5 * (emdashes / (total_lines / 10)) +
+        2.0 * (emojis / (total_lines / 10)) +
+        2.0 * (non_keyboard_symbols / (total_lines / 10)) +
+        0.5 * (comments / (total_lines / 10))
+    ) 
+
+    # round to 2 decimal places (e.g 0.12)
+    return round(confidence, 2)

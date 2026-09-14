@@ -1,5 +1,5 @@
 from emoji import emoji_count
-from utils import calculate_ratelimit, is_banned_domain, get_repository_default_branch, get_repository_tree, get_file, count_comments, count_docstrings, count_non_keyboard_symbols, sigmoid
+from utils import calculate_ratelimit, is_banned_domain, get_repository_default_branch, get_repository_tree, get_file, ai_detector
 from time import sleep
 from bs4 import BeautifulSoup
 from groq import Groq
@@ -47,30 +47,6 @@ else:
     GITHUB_AUTH = False
     
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-
-# determine whether code/text is ai
-def ai_detector(content):
-    comments = count_comments(content)
-    emojis = len(emoji_count(content))
-
-    # python only
-    docstrings = count_docstrings(content)
-
-    emdashes = content.count("—")
-    non_keyboard_symbols = count_non_keyboard_symbols(content)
-
-    total_lines = len(content.splitlines())
-
-    # random ass math function
-    confidence = sigmoid(
-        3.0 * (docstrings / (total_lines / 10)) +
-        2.5 * (emdashes / (total_lines / 10)) +
-        2.0 * (emojis / (total_lines / 10)) +
-        2.0 * (non_keyboard_symbols / (total_lines / 10)) +
-        0.5 * (comments / (total_lines / 10))
-    ) 
-
-    return round(confidence, 2)
 
 # checks
 def raw_readme_check(readme):
