@@ -235,7 +235,7 @@ def run_all_checks(readme, repo, demo, stardance):
         else:
             pass # TODO: handle X-RateLimit-Reset not being provided
 
-    if raw_readme_check(readme_response) != "No Readme":
+    if raw_readme_check(readme_response) not in ["No Readme", "Raw Readme Link is not raw"]:
         ai_readme_check(readme_response)
         short_empty_readme(readme_response)
 
