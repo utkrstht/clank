@@ -109,8 +109,8 @@ def sigmoid(x):
 # determine whether code/text is ai
 def ai_detector(content):
     comments = count_comments(content)
-    emojis = len(emoji_count(content))
-
+    emojis = emoji_count(content)
+    
     # python only
     docstrings = count_docstrings(content)
 
