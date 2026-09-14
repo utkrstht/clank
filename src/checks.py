@@ -70,10 +70,14 @@ def private_demo_check(demo):
 
 def ai_readme_check(readme):
     readme_text = readme.text
-    if readme_text.count("—") >= 1 or emoji_count(readme_text) >= 3:
+
+    # this is like a fuckywucky thing since it's not REALLY meant for normal .md files
+    confidence = ai_detector(readme_text)
+
+    # trigger value is low because function is weird, see ai_codebase_check for proper reason
+    if confidence >= 0.40:
         reject_reasons.append(rejection_reasons["ai_readme"])
         return "AI Readme"
-        # TODO: make more accurate 
 
 def hosting_provider_check(demo, repo):
     if is_banned_domain(demo):
@@ -181,6 +185,7 @@ def ai_codebase_check(repo):
             # trigger value is pretty low since the function can return low values even for high AI usage in some cases
             if code_confidence >= 0.45 or agents_confidence >= 0.40:
                 reject_reasons.append(rejection_reasons["ai_code"])
+                return "AI Codebase"
             
         except Exception as e:
             print(f"ohohoho whoops i fucked up (could not read {path} while fetching file): {e}")
