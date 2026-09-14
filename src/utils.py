@@ -91,6 +91,8 @@ def count_docstrings(content):
     except Exception as e:
         print("ouu shii something happened: ", e)
 
+    return docstrings
+
 def count_non_keyboard_symbols(content):
     keyboards_chars = set(string.printable)
     symbols = 0
