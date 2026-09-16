@@ -27,9 +27,14 @@ def open_repo(driver, repo):
     sleep(2)
 
 def scroll_down(driver, pixels):
-    driver.execute_script(f"window.scrollBy(0, {pixels})")
-    sleep(1)
-
+    current_scroll = 0
+    speed = 100
+    while current_scroll < pixels:
+        driver.execute_script(f"window.scrollBy(0, {speed})")
+        current_scroll += speed
+        sleep(0.1)
+    sleep((pixels/speed) * 0.1 + 1) # make sure the multiplier value is the same as the sleep value in the while loop!
+    
 def create_video(repo):
     driver = create_driver()
 
@@ -39,3 +44,6 @@ def create_video(repo):
     sleep(5)
 
     driver.quit()
+
+if __name__ == "__main__":
+    create_video("https://github.com/utkrstht/clank")
