@@ -35,7 +35,7 @@ def create_video(repo):
 
     # proof video process
     open_repo(driver, repo)
-    scroll_down(driver)
+    scroll_down(driver, 800)
     sleep(5)
 
     driver.quit()
