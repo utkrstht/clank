@@ -61,17 +61,21 @@ def scroll_down(driver, pixels):
         sleep(0.1)
     sleep((pixels/speed) * 0.1 + 1) # make sure the multiplier value is the same as the sleep value in the while loop!
     
-def create_video(repo):
+def create_video(repo, stardance, demo):
     driver = create_driver()
     ffmpeg = start_recording(driver.title)
 
     # proof video process
+    open_url(driver, stardance)
+    sleep(3)
+    open_url(driver, demo)
+    scroll_down(driver, 1000)
+    sleep(2)
     open_url(driver, repo)
-    scroll_down(driver, 800)
-    sleep(5)
+    sleep(3)
 
     stop_recording(ffmpeg)
     driver.quit()
 
 if __name__ == "__main__":
-    create_video("https://github.com/utkrstht/clank")
+    create_video("https://github.com/utkrstht/clank", "https://stardance.hackclub.com/projects/49970", "https://github.com/utkrstht")
