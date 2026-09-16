@@ -1,4 +1,4 @@
-from pygments.lexer import guess_lexer
+from pygments.lexers import guess_lexer
 from pygments.token import Comment
 from emoji import emoji_count
 import unicodedata

@@ -158,6 +158,8 @@ def project_banner_relevance_check(stardance):
 def ai_codebase_check(repo):
     # TODO (not really): guess what model generated the code, e.g. gemini REALLY likes to fill the code with docstrings and --- thing --- comments
     headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
+
+    repo = repo.replace("https://github.com/", "https://api.github.com/repos/")
     
     # obtain repository files
     branch = get_repository_default_branch(repo, headers)

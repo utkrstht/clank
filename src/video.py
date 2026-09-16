@@ -80,9 +80,11 @@ def create_video(repo, stardance, demo):
     driver = create_driver()
     ffmpeg = start_recording(driver.title)
 
+    api_repo = repo.replace("https://github.com/", "https://api.github.com/repos/")
+
     # obtain repository files
-    branch = get_repository_default_branch(repo, {})
-    tree = get_repository_tree(repo, branch, {})
+    branch = get_repository_default_branch(api_repo, {})
+    tree = get_repository_tree(api_repo, branch, {})
 
     source_files = [ item for item in tree if item["type"] == "blob" and item["path"].endswith(source_extensions) ]
 
