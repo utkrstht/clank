@@ -69,10 +69,10 @@ def open_file(driver, filepath):
 
 def scroll(driver, direction, pixels):
     current_scroll = 0
-    speed = 100 if direction == "down" else -100
+    speed = 250 if direction == "down" else -250
     while current_scroll < pixels:
         driver.execute_script(f"window.scrollBy(0, {speed})")
-        current_scroll += speed
+        current_scroll += 250
         sleep(0.01)
     sleep((pixels/speed) * 0.1 + 1) # make sure the multiplier value is the same as the sleep value in the while loop!
     
