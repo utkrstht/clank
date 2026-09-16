@@ -52,18 +52,9 @@ def open_url(driver, url):
     )
     sleep(2)
 
-def scroll_up(driver, pixels):
+def scroll(driver, direction, pixels):
     current_scroll = 0
-    speed = 100
-    while current_scroll < pixels:
-        driver.execute_script(f"window.scrollBy(0, -{speed})")
-        current_scroll += speed
-        sleep(0.1)
-    sleep((pixels/speed) * 0.1 + 1) # make sure the multiplier value is the same as the sleep value in the while loop!        
-
-def scroll_down(driver, pixels):
-    current_scroll = 0
-    speed = 100
+    speed = 100 if direction == "down" else -100
     while current_scroll < pixels:
         driver.execute_script(f"window.scrollBy(0, {speed})")
         current_scroll += speed
@@ -78,8 +69,8 @@ def create_video(repo, stardance, demo):
     open_url(driver, stardance)
     sleep(3)
     open_url(driver, demo)
-    scroll_down(driver, 1000)
-    scroll_up(driver, 1000)
+    scroll(driver, "down", 1000)
+    scroll(driver, "up", 1000)
     sleep(2)
     open_url(driver, repo)
     sleep(3)
