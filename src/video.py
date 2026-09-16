@@ -7,6 +7,7 @@ from selenium.webdriver.firefox.service import Service
 from time import sleep
 import os
 import subprocess
+import signal
 
 def create_driver():
     options = Options()
@@ -21,17 +22,17 @@ def create_driver():
     driver = webdriver.Firefox(service=service, options=options)
     return driver
 
-def start_recording(driver):
+def start_recording(window):
     ffmpeg = subprocess.Popen([
         # I am sorry once more
         os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ffmpeg", "bin", "ffmpeg.exe")),
         "-y",
         "-f", "gdigrab",
         "-framerate", "30",
-        "-i", "title=Mozilla Firefox",
-        "-vcodec", "libx264",
-        "-preset", "ultrafast",
-        "video.mp4",
+        "-i", "desktop",
+        "-c:v", "mpeg4",
+        "-q:v", "5",
+        "video.avi",
     ], stdin=subprocess.PIPE)
 
     sleep(2)
@@ -59,7 +60,7 @@ def scroll_down(driver, pixels):
     
 def create_video(repo):
     driver = create_driver()
-    ffmpeg = start_recording(driver)
+    ffmpeg = start_recording(driver.title)
 
     # proof video process
     open_repo(driver, repo)
