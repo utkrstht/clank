@@ -73,27 +73,24 @@ def scroll(driver, direction, pixels):
     while current_scroll < pixels:
         driver.execute_script(f"window.scrollBy(0, {speed})")
         current_scroll += 250
-        sleep(0.01)
+        sleep(0.1)
     sleep((pixels/speed) * 0.1 + 1) # make sure the multiplier value is the same as the sleep value in the while loop!
 
 def high_scroll(driver, direction):
     last_height = driver.execute_script("return document.documentElement.scrollHeight")
+    speed = 350 if direction == "down" else -350
     while True:
-        if direction == "down":
-            driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight)")
-            sleep(1)
-            new_height = driver.execute_script("return document.documentElement.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height
-        else:
-            driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight)")
-            sleep(1)
-            new_height = driver.execute_script("return document.documentElement.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height            
-    
+        current_scroll = 0
+        while current_scroll < last_height:
+            driver.execute_script(f"window.scrollBy(0, {speed})")
+            current_scroll += 350
+            sleep(0.1)
+        sleep(1)
+        new_height = driver.execute_script("return document.documentElement.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
+
 def create_video(repo, stardance, demo):
     driver = create_driver()
     ffmpeg = start_recording(driver.title)
@@ -122,8 +119,6 @@ def create_video(repo, stardance, demo):
 
         try:
            open_file(driver, file["path"])
-
-           total_height = driver.execute_script("return document.documentElement.scrollHeight") 
 
            high_scroll(driver, "down")
            high_scroll(driver, "up") 
