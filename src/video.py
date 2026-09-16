@@ -75,6 +75,24 @@ def scroll(driver, direction, pixels):
         current_scroll += 250
         sleep(0.01)
     sleep((pixels/speed) * 0.1 + 1) # make sure the multiplier value is the same as the sleep value in the while loop!
+
+def high_scroll(driver, direction):
+    last_height = driver.execute_script("return document.documentElement.scrollHeight")
+    while True:
+        if direction == "down":
+            driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight)")
+            sleep(1)
+            new_height = driver.execute_script("return document.documentElement.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
+        else:
+            driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight)")
+            sleep(1)
+            new_height = driver.execute_script("return document.documentElement.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height            
     
 def create_video(repo, stardance, demo):
     driver = create_driver()
@@ -92,8 +110,8 @@ def create_video(repo, stardance, demo):
     open_url(driver, stardance)
     sleep(3)
     open_url(driver, demo)
-    scroll(driver, "down", 1000)
-    scroll(driver, "up", 1000)
+    high_scroll(driver, "down")
+    high_scroll(driver, "up")
     sleep(2)
     open_url(driver, repo)
     sleep(3)
@@ -104,8 +122,13 @@ def create_video(repo, stardance, demo):
 
         try:
            open_file(driver, file["path"])
-           scroll(driver, "down", 5000)
-           scroll(driver, "up", 5000)
+
+           total_height = driver.execute_script("return document.documentElement.scrollHeight") 
+
+           high_scroll(driver, "down")
+           high_scroll(driver, "up") 
+           #scroll(driver, "down", total_height)
+           #scroll(driver, "up", total_height)
         except Exception as e:
             print(f"yikes (could not open {path}): {e}")    
 
