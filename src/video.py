@@ -5,6 +5,8 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from time import sleep
+from utils import get_repository_default_branch, get_repository_tree
+from checks import source_extensions
 import os
 import subprocess
 import signal
@@ -52,6 +54,19 @@ def open_url(driver, url):
     )
     sleep(2)
 
+def open_file(driver, filepath):
+    repo = driver.current_url.rstrip("/")
+
+    if "/blob/" in repo or "/tree/" in repo:
+        repo = repo.split("/blob/")[0].split("/tree/")[0]
+
+    driver.get(f"{repo}/blob/main/{filepath}")
+    WebDriverWait(driver, 10).until(
+        lambda d: d.execute_script("return document.readyState") == "complete"
+    )
+    sleep(2)
+
+
 def scroll(driver, direction, pixels):
     current_scroll = 0
     speed = 100 if direction == "down" else -100
@@ -65,6 +80,12 @@ def create_video(repo, stardance, demo):
     driver = create_driver()
     ffmpeg = start_recording(driver.title)
 
+    # obtain repository files
+    branch = get_repository_default_branch(repo, {})
+    tree = get_repository_tree(repo, branch, {})
+
+    source_files = [ item for item in tree if item["type"] == "blob" and item["path"].endswith(source_extensions) ]
+
     # proof video process
     open_url(driver, stardance)
     sleep(3)
@@ -74,6 +95,17 @@ def create_video(repo, stardance, demo):
     sleep(2)
     open_url(driver, repo)
     sleep(3)
+
+    # open all source files 
+    for file in source_files:
+        path = file["path"]
+
+        try:
+           open_file(driver, file["path"])
+           scroll(driver, "down", 5000)
+           scroll(driver, "up", 5000)
+        except Exception as e:
+            print(f"yikes (could not open {path}): {e}")    
 
     stop_recording(ffmpeg)
     driver.quit()
