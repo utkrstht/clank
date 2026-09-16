@@ -4,3 +4,8 @@
 # geckodriver things
 geckodriver/
 geckodriver.log
+
+# ffmpeg
+ffmpeg/
+*.mp4
+*.avi
