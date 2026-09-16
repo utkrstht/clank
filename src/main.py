@@ -1,5 +1,6 @@
 from checks import run_all_checks
 from utils import create_rejection_message
+from video import create_video
 import argparse
         
 parser = argparse.ArgumentParser(description="clank it up 🚀✨ (this is a joke)")
@@ -17,6 +18,7 @@ def main():
 
     if len(reject_reasons) != 0:
         reject_message = create_rejection_message(reject_reasons)
+        create_video(args.repo, args.stardance, args.demo)
         return reject_message
     else:
         return "All checks passed"
