@@ -4,3 +4,4 @@ bs4
 c2pa-python
 groq
 pygments
+selenium
