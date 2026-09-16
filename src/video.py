@@ -58,7 +58,7 @@ def scroll(driver, direction, pixels):
     while current_scroll < pixels:
         driver.execute_script(f"window.scrollBy(0, {speed})")
         current_scroll += speed
-        sleep(0.1)
+        sleep(0.01)
     sleep((pixels/speed) * 0.1 + 1) # make sure the multiplier value is the same as the sleep value in the while loop!
     
 def create_video(repo, stardance, demo):

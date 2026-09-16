@@ -196,6 +196,7 @@ def ai_codebase_check(repo):
             print(f"ohohoho whoops i fucked up (could not read {path} while fetching file): {e}")
 
 def run_all_checks(readme, repo, demo, stardance):
+    # TODO: add User-Agent to request headers
     if GITHUB_AUTH and "github" in readme and "github" in repo:
         headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
         readme_response = requests.get(readme, timeout=30, headers=headers)
