@@ -43,10 +43,13 @@ def stop_recording(ffmpeg):
     ffmpeg.stdin.flush()
     ffmpeg.wait()
 
-def open_repo(driver, repo):
-    driver.get(repo)
+def open_url(driver, url):
+    driver.get(url)
     # wait to load
-    WebDriverWait(driver, 10).until(expected_conditions.presence_of_element_located((By.TAG_NAME, "article")))
+    WebDriverWait(driver, 10).until(
+        # check if basic html body is loaded
+        lambda d: d.execute_script("return document.readyState") == "complete"
+    )
     sleep(2)
 
 def scroll_down(driver, pixels):
@@ -63,7 +66,7 @@ def create_video(repo):
     ffmpeg = start_recording(driver.title)
 
     # proof video process
-    open_repo(driver, repo)
+    open_url(driver, repo)
     scroll_down(driver, 800)
     sleep(5)
 
