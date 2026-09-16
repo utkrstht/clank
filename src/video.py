@@ -14,8 +14,9 @@ import signal
 def create_driver():
     options = Options()
 
-    options.add_argument("--width=1920")
-    options.add_argument("--height=1080")
+    # change these values according to your screen resolution
+    options.add_argument("--width=1536")
+    options.add_argument("--height=864")
 
     # I am explictly passing geckodriver because I am using Python 3.14 and selenium doesn't really support it all that much
     # I am also sorry for this fuckass abomination of code that I have written
