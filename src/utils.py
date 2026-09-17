@@ -38,14 +38,14 @@ def is_banned_domain(demo):
 def get_repository_default_branch(repo, headers):
     headers["Accept"] = "application/vnd.github+json"
 
-    response = requests.get(repo, headers=headers)
+    response = requests.get(repo.rstrip("/"), headers=headers)
     response.raise_for_status()
 
     return response.json().get("default_branch", "main")
 
 def get_repository_tree(repo, branch, headers):
     # https://github.com/example/repository/git/trees/main?recursive=1
-    url = f"{repo}/git/trees/{branch}?recursive=1"
+    url = f"{repo.rstrip('/')}/git/trees/{branch}?recursive=1"
     response = requests.get(url, headers=headers)
     response.raise_for_status()
 

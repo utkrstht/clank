@@ -159,7 +159,7 @@ def ai_codebase_check(repo):
     # TODO (not really): guess what model generated the code, e.g. gemini REALLY likes to fill the code with docstrings and --- thing --- comments
     headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
 
-    repo = repo.replace("https://github.com/", "https://api.github.com/repos/")
+    repo = repo.replace("https://github.com/", "https://api.github.com/repos/").rstrip("/")
     
     # obtain repository files
     branch = get_repository_default_branch(repo, headers)
@@ -200,7 +200,8 @@ def ai_codebase_check(repo):
 def run_all_checks(readme, repo, demo, stardance):
     # TODO: add User-Agent to request headers
     if GITHUB_AUTH and "github" in readme and "github" in repo:
-        headers = {"Authorization": f"Bearer {os.environ.get("GITHUB_TOKEN")}"}
+        token = os.environ.get("GITHUB_TOKEN")
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
         readme_response = requests.get(readme, timeout=30, headers=headers)
         repo_response = requests.get(repo, timeout=30, headers=headers)
         demo_response = requests.get(demo, timeout=30)

@@ -27,9 +27,9 @@ def main():
             return "All checks passed"
     elif args.fiona:
         cert = get_cert(args.fiona)
-        stardance = f"https://stardance.hackclub.com/certification/{cert['externalId']}"
+        stardance = f"https://stardance.hackclub.com/projects/{cert['externalId']}"
 
-        reject_message = run_all_checks(cert['readmeUrl'], cert['repoUrl'], cert['demoUrl'], stardance)
+        reject_reasons = run_all_checks(cert['readmeUrl'], cert['repoUrl'], cert['demoUrl'], stardance)
 
         if len(reject_reasons) != 0:
             reject_message = create_rejection_message(reject_reasons)
