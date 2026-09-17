@@ -71,8 +71,7 @@ def private_demo_check(demo):
 def ai_readme_check(readme):
     readme_text = readme.text
 
-    # this is like a fuckywucky thing since it's not REALLY meant for normal .md files
-    confidence = ai_detector(readme_text)
+    confidence = ai_detector(readme_text, True)
 
     # trigger value is low because function is weird, see ai_codebase_check for proper reason
     if confidence >= 0.40:

@@ -114,7 +114,7 @@ def sigmoid(x):
     return 1 / (1 + math.exp(-x))
 
 # determine whether code/text is ai
-def ai_detector(content):
+def ai_detector(content, markdown=False):
     comments = count_comments(content)
     emojis = emoji_count(content)
 
@@ -127,13 +127,20 @@ def ai_detector(content):
     total_lines = len(content.splitlines())
 
     # random ass math function
-    confidence = sigmoid(
-        3.0 * (docstrings / (total_lines / 10)) +
-        2.5 * (emdashes / (total_lines / 10)) +
-        2.0 * (emojis / (total_lines / 10)) +
-        2.0 * (non_keyboard_symbols / (total_lines / 10)) +
-        0.5 * (comments / (total_lines / 10))
-    ) 
+    if not markdown:
+        confidence = sigmoid(
+            3.0 * (docstrings / (total_lines / 10)) +
+            2.5 * (emdashes / (total_lines / 10)) +
+            2.0 * (emojis / (total_lines / 10)) +
+            2.0 * (non_keyboard_symbols / (total_lines / 10)) +
+            0.5 * (comments / (total_lines / 10))
+        )
+    elif markdown:
+        confidence = sigmoid(
+            2.5 * (emdashes / (total_lines / 10)) +
+            2.0 * (emojis / (total_lines / 10)) +
+            2.0 * (non_keyboard_symbols / (total_lines / 10))
+        )         
 
     # round to 2 decimal places (e.g 0.12)
     return round(confidence, 2)

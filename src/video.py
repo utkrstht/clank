@@ -130,3 +130,6 @@ def create_video(repo, stardance, demo):
 
     stop_recording(ffmpeg)
     driver.quit()
+
+if __name__ == "__main__":
+    create_video("https://github.com/utkrstht/clank", "", "")
