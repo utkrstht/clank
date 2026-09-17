@@ -1,5 +1,5 @@
 # clank
-clank is an review tool specifically for hack club stardance, it can run quick checks on projects for common rejection reasons for faster reviews.
+clank is an review tool specifically for hack club stardance, it can run quick checks on projects for common rejection reasons and create proof review video as well for faster reviews.
 
 ### features
 clank runs these checks on a project:
@@ -13,19 +13,23 @@ clank runs these checks on a project:
 - AI generated Stardance project banner check (via C2pa metadata)
 - AI codebase check
 - Stardance project banner relevance check
+and probably a few more that I forgot(?)
 
-once these checks are complete, depending on whatever issues there were present, clank creates a rejection message.
+once these checks are complete, depending on whatever issues there were present, clank creates a rejection message and a proof video via selenium
 
-clank uses extremely minimal AI in any of it's review processes only to process image information which could otherwise not be processed programmatically, any and all AI used is strictly limited to processing information which cannot be processed via programatic means
+for the proof videos, clank opens the repository, demo and stardance project page and goes through them, including all repository files that would be considered in the checks.
+
+clank aims to use little to no AI in it's review processes compared to other similar projects, but this has it's own flaws such as missing sloppy websites with little to no AI signs in it's codebase.
+
+clank is a good boy and good at it's job (i hope), i'll probably add a pat feature for clank in the future so you can pet it for good reviews
 
 ### goals
-- Create review videos
+- ~~Create review videos~~
+- Link with Slack and Fiona
 
 ### ai usage
 (this is regarding ai usage in the development process of clank, not the review processes in clank)  
 AI usage is so incredibly little, you can scroll through the code and I've added little comments which show you where AI was used
-
-You may also notice, after me commiting a bit, there's like 47 fix commits, that is because after I do a bit of work, I force opencode to review my code for any bugs because I Write Shit Code.
 
 ### outro
 clank is pretty bad right now, it's not all that good but yeah  
