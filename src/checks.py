@@ -212,8 +212,8 @@ def run_all_checks(readme, repo, demo, stardance):
         demo_response = requests.get(demo, timeout=30)
         stardance_response = requests.get(stardance, timeout=30)
 
-    repo_status = private_repo_check(repo)
-    demo_status = private_demo_check(demo)
+    repo_status = private_repo_check(repo_response)
+    demo_status = private_demo_check(demo_response)
 
     # handle ratelimits and also some more of this one liner wizardry
     if readme_response.status_code == 403 and int(readme_response.headers.get("X-RateLimit-Remaining") or 0) == 0:
