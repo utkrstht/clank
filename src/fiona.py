@@ -44,3 +44,15 @@ def claim_cert(id):
     response.raise_for_status()
 
     return response.json()
+
+def submit_review(id, verdict, feedback):
+    url = f"https://ds.shipwrights.dev/api/v1/workplaces/stardance/certifications/{id}/review"
+    cookies = {"session": SESSION}
+
+    response = requests.post(url, cookies=cookies, json={
+        "verdict": verdict,
+        "comment": feedback
+    })
+    response.raise_for_status()
+
+    return response.json()
