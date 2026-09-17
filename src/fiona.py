@@ -36,5 +36,11 @@ def get_cert(link):
 
     return response.json()
 
-if __name__ == "__main__":
-    print(get_cert("https://ds.shipwrights.dev/stardance/certifications/be51e324-bac3-42b8-b638-c7b414812fbb"))
+def claim_cert(id):
+    url = f"https://ds.shipwrights.dev/api/v1/workplaces/stardance/certifications/{id}/claim"
+    cookies = {"session": SESSION}
+
+    response = requests.post(url, cookies=cookies, json={"unclaim": False})
+    response.raise_for_status()
+
+    return response.json()
