@@ -130,7 +130,3 @@ def create_video(repo, stardance, demo):
 
     stop_recording(ffmpeg)
     driver.quit()
-
-if __name__ == "__main__":
-    # Ignore this, this is just me testing this, the links are random links
-    create_video("https://github.com/utkrstht/clank", "https://stardance.hackclub.com/projects/49970", "https://github.com/utkrstht")
