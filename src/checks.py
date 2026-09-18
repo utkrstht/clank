@@ -71,10 +71,7 @@ def private_demo_check(demo):
 def ai_readme_check(readme):
     readme_text = readme.text
 
-    confidence = ai_detector(readme_text, True)
-
-    # trigger value is low because function is weird, see ai_codebase_check for proper reason
-    if confidence >= 0.40:
+    if readme_text.count("—") > 1 or emoji_count(readme_text) > 2:
         reject_reasons.append(rejection_reasons["ai_readme"])
         return "AI Readme"
 
