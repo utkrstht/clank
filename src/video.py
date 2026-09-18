@@ -10,6 +10,8 @@ from checks import source_extensions
 import os
 import subprocess
 
+OUTPUT_VIDEO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "video.avi")
+
 def create_driver():
     options = Options()
 
@@ -34,7 +36,7 @@ def start_recording(window):
         "-i", "desktop",
         "-c:v", "mpeg4",
         "-q:v", "5",
-        "video.avi",
+        OUTPUT_VIDEO,
     ], stdin=subprocess.PIPE)
 
     sleep(2)
@@ -129,6 +131,8 @@ def create_video(repo, stardance, demo):
 
     stop_recording(ffmpeg)
     driver.quit()
+
+    return OUTPUT_VIDEO
 
 if __name__ == "__main__":
     create_video("https://github.com/utkrstht/clank", "", "")

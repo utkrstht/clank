@@ -32,7 +32,7 @@ def handle_review(message, client, say):
 
     if len(reject_reasons) != 0:
         reject_message = create_rejection_message(reject_reasons)
-        create_video(cert['repoUrl'], stardance, cert['demoUrl'])
+        video = create_video(cert['repoUrl'], stardance, cert['demoUrl'])
 
         say(reject_message, thread_ts=ts) # TODO: handle uploading and sending proof videos
     else:
