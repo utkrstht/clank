@@ -12,9 +12,10 @@ load_dotenv()
 app = App(token=os.environ.get("SLACK_BOT_TOKEN"))
 
 @app.message("!review")
-def handle_review(message, say):
+def handle_review(message, client, say):
     ts = message["ts"]
     text = message["text"]
+    channel = message["channel"]
     say("ok :thumbsup:", thread_ts=ts)
     parts = text.split(maxsplit=1)
 
@@ -31,7 +32,9 @@ def handle_review(message, say):
 
     if len(reject_reasons) != 0:
         reject_message = create_rejection_message(reject_reasons)
-        say(reject_message, thread_ts=ts) # TODO: handle uploading and sending proof video
+        create_video(cert['repoUrl'], stardance, cert['demoUrl'])
+
+        say(reject_message, thread_ts=ts) # TODO: handle uploading and sending proof videos
     else:
         say("good boy project", thread_ts=ts)
 
