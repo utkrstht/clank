@@ -13,25 +13,17 @@ app = App(token=os.environ.get("SLACK_BOT_TOKEN"))
 
 @app.message("!review")
 def handle_review(message, say):
-    say("ok :thumbsup:")
+    ts = message["ts"]
     text = message["text"]
+    say("ok :thumbsup:", thread_ts=ts)
     parts = text.split(maxsplit=1)
 
     if len(parts) < 2:
-        say("yo ass forgot the link :joy:")
+        say("yo ass forgot the link :joy:", thread_ts=ts)
         return
 
     fiona = parts[1].strip("<>")
-
-    if "…" in fiona or "..." in fiona:
-        say("Link is truncated. Paste the full URL.")
-        return
-
-    try:
-        cert = get_cert(fiona)
-    except Exception as e:
-        say(f"Failed to fetch cert: {e}")
-        return
+    cert = get_cert(fiona)
 
     stardance = f"https://stardance.hackclub.com/projects/{cert['externalId']}"
 
@@ -39,9 +31,9 @@ def handle_review(message, say):
 
     if len(reject_reasons) != 0:
         reject_message = create_rejection_message(reject_reasons)
-        say(reject_message) # TODO: handle uploading and sending proof video
+        say(reject_message, thread_ts=ts) # TODO: handle uploading and sending proof video
     else:
-        say("good boy project")
+        say("good boy project", thread_ts=ts)
 
 # shut the fuck up useless console output
 @app.event("message")
