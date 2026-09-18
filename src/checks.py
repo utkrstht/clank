@@ -117,6 +117,7 @@ def c2pa_banner_check(stardance):
         print("something happened lol:", e)
 
 def project_banner_relevance_check(stardance):
+    # TODO: pass some project information like description for more accuracy
     soup = BeautifulSoup(stardance.text, "html.parser")
     banner = soup.find("img", class_="project-show__banner-image")
     # banner can sometimes be None

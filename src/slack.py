@@ -5,6 +5,8 @@ from checks import run_all_checks
 from utils import create_rejection_message
 from video import create_video
 from fiona import get_cert
+import subprocess
+import sys
 import os
 
 load_dotenv()
@@ -35,6 +37,12 @@ def handle_review(message, client, say):
         video = create_video(cert['repoUrl'], stardance, cert['demoUrl'])
 
         say(reject_message, thread_ts=ts) # TODO: handle uploading and sending proof videos
+        client.file_upload_v2(
+            channel=channel,
+            file=video,
+            title="proof video",
+            thread_ts=ts
+        )
     else:
         say("good boy project", thread_ts=ts)
 
