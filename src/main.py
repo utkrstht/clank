@@ -2,7 +2,11 @@ from checks import run_all_checks
 from utils import create_rejection_message
 from video import create_video
 from fiona import get_cert
+from slack import app
+
+from slack_bolt.adapter.socket_mode import SocketModeHandler
 import argparse
+import os
         
 parser = argparse.ArgumentParser(description="clank it up 🚀✨ (this is a joke)")
 
@@ -36,7 +40,7 @@ def main():
             create_video(cert['repoUrl'], stardance, cert['demoUrl'])
 
             return reject_message
-        
 
 if __name__ == "__main__":
-    print(main())
+    handler = SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))
+    #print(main())

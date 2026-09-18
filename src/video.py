@@ -9,7 +9,6 @@ from utils import get_repository_default_branch, get_repository_tree
 from checks import source_extensions
 import os
 import subprocess
-import signal
 
 def create_driver():
     options = Options()
