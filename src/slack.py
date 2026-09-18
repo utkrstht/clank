@@ -24,6 +24,11 @@ def handle_review(message, say):
     if reject_message:
         say(reject_message) # TODO: handle uploading and sending proof video 
 
+# shut the fuck up useless console output
+@app.event("message")
+def handle_message_events():
+    pass
+    
 
 if __name__ == "__main__":
     handler = SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))
