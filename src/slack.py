@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from checks import run_all_checks
 from utils import create_rejection_message
-from video import create_video
+from video import create_video, OUTPUT_VIDEO
 from fiona import get_cert
 import subprocess
 import sys
@@ -34,13 +34,16 @@ def handle_review(message, client, say):
 
     if len(reject_reasons) != 0:
         reject_message = create_rejection_message(reject_reasons)
-        video = create_video(cert['repoUrl'], stardance, cert['demoUrl'])
+        subprocess.run([
+            sys.executable, "-c",
+            f"from video import create_video; create_video('{cert['repoUrl']}', '{stardance}', '{cert['demoUrl']}')"
+        ], cwd=os.path.dirname(os.path.abspath(__file__)))
 
         say(reject_message, thread_ts=ts) # TODO: handle uploading and sending proof videos
-        client.file_upload_v2(
+        client.files_upload_v2(
             channel=channel,
-            file=video,
-            title="proof video",
+            file=OUTPUT_VIDEO,
+            title="proof video.avi",
             thread_ts=ts
         )
     else:
